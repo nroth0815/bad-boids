@@ -9,10 +9,16 @@ import random
 
 # Deliberately terrible code for teaching purposes
 
-boids_x=[random.uniform(-450,50.0) for x in range(50)]
-boids_y=[random.uniform(300.0,600.0) for x in range(50)]
-boid_x_velocities=[random.uniform(0,10.0) for x in range(50)]
-boid_y_velocities=[random.uniform(-20.0,20.0) for x in range(50)]
+range_val=50
+limit_1=100
+limit_2=10000
+middle_const=0.01
+speed_const=0.125
+
+boids_x=[random.uniform(-450,50.0) for x in range(range_val)]
+boids_y=[random.uniform(300.0,600.0) for x in range(range_val)]
+boid_x_velocities=[random.uniform(0,10.0) for x in range(range_val)]
+boid_y_velocities=[random.uniform(-20.0,20.0) for x in range(range_val)]
 boids=(boids_x,boids_y,boid_x_velocities,boid_y_velocities)
 
 def update_boids(boids):
@@ -20,22 +26,22 @@ def update_boids(boids):
 	# Fly towards the middle
 	for i in range(len(xs)):
 		for j in range(len(xs)):
-			xvs[i]=xvs[i]+(xs[j]-xs[i])*0.01/len(xs)
+			xvs[i]=xvs[i]+(xs[j]-xs[i])*middle_const/len(xs)
 	for i in range(len(xs)):
 		for j in range(len(xs)):
-			yvs[i]=yvs[i]+(ys[j]-ys[i])*0.01/len(xs)
+			yvs[i]=yvs[i]+(ys[j]-ys[i])*middle_const/len(xs)
 	# Fly away from nearby boids
 	for i in range(len(xs)):
 		for j in range(len(xs)):
-			if (xs[j]-xs[i])**2 + (ys[j]-ys[i])**2 < 100:
+			if (xs[j]-xs[i])**2 + (ys[j]-ys[i])**2 < limit_1:
 				xvs[i]=xvs[i]+(xs[i]-xs[j])
 				yvs[i]=yvs[i]+(ys[i]-ys[j])
 	# Try to match speed with nearby boids
 	for i in range(len(xs)):
 		for j in range(len(xs)):
-			if (xs[j]-xs[i])**2 + (ys[j]-ys[i])**2 < 10000:
-				xvs[i]=xvs[i]+(xvs[j]-xvs[i])*0.125/len(xs)
-				yvs[i]=yvs[i]+(yvs[j]-yvs[i])*0.125/len(xs)
+			if (xs[j]-xs[i])**2 + (ys[j]-ys[i])**2 < limit_2:
+				xvs[i]=xvs[i]+(xvs[j]-xvs[i])*speed_const/len(xs)
+				yvs[i]=yvs[i]+(yvs[j]-yvs[i])*speed_const/len(xs)
 	# Move according to velocities
 	for i in range(len(xs)):
 		xs[i]=xs[i]+xvs[i]
